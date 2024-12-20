@@ -174,12 +174,14 @@ RUN <<__RUN
     echo "tools.cmake.cmaketoolchain:generator=Ninja" >> ${GLOBAL_CONF}
     echo "core:default_profile=gcc" >> ${GLOBAL_CONF}
     echo "core:default_build_profile=gcc" >> ${GLOBAL_CONF}
-    echo "core.download:download_cache=/home/michael/.cache/conan_downloads" >> ${GLOBAL_CONF}
-    echo "core.cache:storage_path=/home/michael/.cache/conan_storage" >> ${GLOBAL_CONF}
+    echo "core.download:download_cache=${HOME}/.cache/conan_downloads" >> ${GLOBAL_CONF}
+    echo "core.sources:download_cache=${HOME}/.cache/conan_sources" >> ${GLOBAL_CONF}
+    echo "core.cache:storage_path=${HOME}/.cache/conan_storage" >> ${GLOBAL_CONF}
 __RUN
 
 COPY --chown=michael:michael conanfile.py conanfile.py
 
-RUN --mount=type=cache,target=/home/michael/.cache/conan_downloads,sharing=locked,uid=${USER_UID},gid=${USER_UID} \
-    --mount=type=cache,target=/home/michael/.cache/conan_storage,sharing=locked,uid=${USER_UID},gid=${USER_UID} \
+RUN --mount=type=cache,target=${HOME}/.cache/conan_downloads,sharing=locked,uid=${USER_UID},gid=${USER_UID} \
+    --mount=type=cache,target=${HOME}/.cache/conan_storage,sharing=locked,uid=${USER_UID},gid=${USER_UID} \
+    --mount=type=cache,target=${HOME}/.cache/conan_sources,sharing=locked,uid=${USER_UID},gid=${USER_UID} \
     conan install . --build missing
