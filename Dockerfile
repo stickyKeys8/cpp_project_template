@@ -184,52 +184,54 @@ __RUN
 RUN poetry config virtualenvs.in-project true
 RUN poetry config virtualenvs.prefer-active-python true
 
-# Conan
-#RUN --mount=type=cache, target=${CONAN_HOME} \
-## Create Conan profiles for clang and gcc
-#RUN mkdir -p ${CONAN_HOME}/profiles
-#
-#ARG CLANG_PROFILE=${CONAN_HOME}/profiles/clang
-#RUN <<__RUN
-#    touch ${CLANG_PROFILE}
-#    echo "[settings]" >> ${CLANG_PROFILE}
-#    echo "os=Linux" >> ${CLANG_PROFILE}
-#    echo "arch=x86_64" >> ${CLANG_PROFILE}
-#    echo "build_type=Release" >> ${CLANG_PROFILE}
-#    echo "compiler=clang" >> ${CLANG_PROFILE}
-#    echo "compiler.cppstd=gnu23" >> ${CLANG_PROFILE}
-#    echo "compiler.libcxx=libc++" >> ${CLANG_PROFILE}
-#    echo "compiler.version=${CLANG_VERSION}" >> ${CLANG_PROFILE}
-#    echo "[buildenv]" >> ${CLANG_PROFILE}
-#    echo "CC=/usr/bin/clang" >> ${CLANG_PROFILE}
-#    echo "CXX=/usr/bin/clang++" >> ${CLANG_PROFILE}
-#__RUN
-#
-#ARG GCC_PROFILE=${CONAN_HOME}/profiles/gcc
-#RUN <<__RUN
-#    touch ${GCC_PROFILE}
-#    echo "[settings]" >> ${GCC_PROFILE}
-#    echo "os=Linux" >> ${GCC_PROFILE}
-#    echo "arch=x86_64" >> ${GCC_PROFILE}
-#    echo "build_type=Release" >> ${GCC_PROFILE}
-#    echo "compiler=gcc" >> ${GCC_PROFILE}
-#    echo "compiler.cppstd=gnu23" >> ${GCC_PROFILE}
-#    echo "compiler.libcxx=libstdc++" >> ${GCC_PROFILE}
-#    echo "compiler.version=${GCC_VERSION}" >> ${GCC_PROFILE}
-#    echo "[buildenv]" >> ${GCC_PROFILE}
-#    echo "CC=/usr/bin/gcc" >> ${GCC_PROFILE}
-#    echo "CXX=/usr/bin/g++" >> ${GCC_PROFILE}
-#__RUN
-#
-## Create a Conan global config
-#ARG GLOBAL_CONF=${CONAN_HOME}/global.conf
-#RUN <<__RUN
-#    touch ${GLOBAL_CONF}
-#    echo "tools.cmake.cmaketoolchain:generator=Ninja" >> ${GLOBAL_CONF}
-#    echo "core:default_profile=gcc" >> ${GLOBAL_CONF}
-#    echo "core:default_build_profile=gcc" >> ${GLOBAL_CONF}
-#    echo "core.sources:download_cache=/workspaces/ccp_project_template/cache" >> ${GLOBAL_CONF} #TODO
-#__RUN
-#
-##ENV CMAKE_CXX_COMPILER_LAUNCHER=ccache
-##ENV CMAKE_C_COMPILER_LAUNCHER=ccache
+# Create Conan profiles for clang and gcc
+ARG CONAN_HOME=/home/michael/.conan2
+RUN mkdir -p ${CONAN_HOME}/profiles
+
+ARG CLANG_PROFILE=${CONAN_HOME}/profiles/clang
+RUN <<__RUN
+    touch ${CLANG_PROFILE}
+    echo "[settings]" >> ${CLANG_PROFILE}
+    echo "os=Linux" >> ${CLANG_PROFILE}
+    echo "arch=x86_64" >> ${CLANG_PROFILE}
+    echo "build_type=Release" >> ${CLANG_PROFILE}
+    echo "compiler=clang" >> ${CLANG_PROFILE}
+    echo "compiler.cppstd=gnu23" >> ${CLANG_PROFILE}
+    echo "compiler.libcxx=libc++" >> ${CLANG_PROFILE}
+    echo "compiler.version=${CLANG_VERSION}" >> ${CLANG_PROFILE}
+    echo "[buildenv]" >> ${CLANG_PROFILE}
+    echo "CC=/usr/bin/clang" >> ${CLANG_PROFILE}
+    echo "CXX=/usr/bin/clang++" >> ${CLANG_PROFILE}
+__RUN
+
+ARG GCC_PROFILE=${CONAN_HOME}/profiles/gcc
+RUN <<__RUN
+    touch ${GCC_PROFILE}
+    echo "[settings]" >> ${GCC_PROFILE}
+    echo "os=Linux" >> ${GCC_PROFILE}
+    echo "arch=x86_64" >> ${GCC_PROFILE}
+    echo "build_type=Release" >> ${GCC_PROFILE}
+    echo "compiler=gcc" >> ${GCC_PROFILE}
+    echo "compiler.cppstd=gnu23" >> ${GCC_PROFILE}
+    echo "compiler.libcxx=libstdc++" >> ${GCC_PROFILE}
+    echo "compiler.version=${GCC_VERSION}" >> ${GCC_PROFILE}
+    echo "[buildenv]" >> ${GCC_PROFILE}
+    echo "CC=/usr/bin/gcc" >> ${GCC_PROFILE}
+    echo "CXX=/usr/bin/g++" >> ${GCC_PROFILE}
+__RUN
+
+RUN mkdir -p /home/michael/.cache/conan
+
+# Create a Conan global config
+ARG GLOBAL_CONF=${CONAN_HOME}/global.conf
+RUN <<__RUN
+    touch ${GLOBAL_CONF}
+    echo "tools.cmake.cmaketoolchain:generator=Ninja" >> ${GLOBAL_CONF}
+    echo "core:default_profile=gcc" >> ${GLOBAL_CONF}
+    echo "core:default_build_profile=gcc" >> ${GLOBAL_CONF}
+    echo "core.sources:download_cache=/home/michael/.cache/conan" >> ${GLOBAL_CONF} #TODO
+__RUN
+
+VOLUME /home/michael/.cache/conan
+#ENV CMAKE_CXX_COMPILER_LAUNCHER=ccache
+#ENV CMAKE_C_COMPILER_LAUNCHER=ccache
