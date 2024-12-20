@@ -7,8 +7,6 @@ ENV SHELL=/bin/bash
 ENV TERM=xterm-256color
 SHELL ["/bin/bash", "-e", "-u", "-o", "pipefail", "-c"]
 
-ENV BLAH=123
-
 # Create user
 ARG USERNAME=michael
 ARG USER_UID=1001
@@ -229,7 +227,12 @@ RUN <<__RUN
     echo "tools.cmake.cmaketoolchain:generator=Ninja" >> ${GLOBAL_CONF}
     echo "core:default_profile=gcc" >> ${GLOBAL_CONF}
     echo "core:default_build_profile=gcc" >> ${GLOBAL_CONF}
+    echo "core.download:download_cache=/home/michael/.cache/conan_downloads" >> ${GLOBAL_CONF}
+    echo "core.cache:storage_path=/home/michael/.cache/conan_storage" >> ${GLOBAL_CONF}
 __RUN
 
 COPY --chown=michael:michael conanfile.py conanfile.py
-RUN conan install . --build missing
+
+RUN --mount=type=cache,target=/home/michael/.cache/conan_downloads,sharing=locked,uid=${USER_UID},gid=${USER_UID} \
+    --mount=type=cache,target=/home/michael/.cache/conan_storage,sharing=locked,uid=${USER_UID},gid=${USER_UID} \
+    conan install . --build missing
