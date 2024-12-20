@@ -185,7 +185,7 @@ RUN poetry config virtualenvs.in-project true
 RUN poetry config virtualenvs.prefer-active-python true
 
 # Create Conan profiles for clang and gcc
-ARG CONAN_HOME=/home/michael/.conan2
+ENV CONAN_HOME=/home/michael/.conan2
 RUN mkdir -p ${CONAN_HOME}/profiles
 
 ARG CLANG_PROFILE=${CONAN_HOME}/profiles/clang
@@ -229,9 +229,7 @@ RUN <<__RUN
     echo "tools.cmake.cmaketoolchain:generator=Ninja" >> ${GLOBAL_CONF}
     echo "core:default_profile=gcc" >> ${GLOBAL_CONF}
     echo "core:default_build_profile=gcc" >> ${GLOBAL_CONF}
-    echo "core.sources:download_cache=/home/michael/.cache/conan" >> ${GLOBAL_CONF} #TODO
 __RUN
 
-VOLUME /home/michael/.cache/conan
-#ENV CMAKE_CXX_COMPILER_LAUNCHER=ccache
-#ENV CMAKE_C_COMPILER_LAUNCHER=ccache
+COPY --chown=michael:michael conanfile.py conanfile.py
+RUN conan install . --build missing
