@@ -1,0 +1,35 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/docker-existing-dockerfile
+{
+	"name": "Existing Dockerfile",
+	"build": {
+		"context": "..",
+		"dockerfile": "../Dockerfile"
+	},
+	"runArgs": [
+		"--name", "cpp_project_container",
+		"--hostname", "cpp_project_container"
+	],
+	"userEnvProbe": "loginInteractiveShell",
+	"remoteUser": "michael",
+	"containerUser": "michael",
+	"mounts": [
+  		"source=/home/michael/conan_cache,target=/tmp/conan,type=bind,consistency=cached"
+	],
+
+	// Uncomment the next line to run commands after the container is created.
+	// "postCreateCommand": "cat /etc/os-release",
+
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"ms-vscode.cpptools-extension-pack",
+				"ms-azuretools.vscode-docker",
+				"ms-vscode.cmake-tools",
+				"zchrissirhcz.cmake-highlight",
+				"ms-python.python",
+				"pkief.material-icon-theme"
+			]
+		}
+	}
+}
