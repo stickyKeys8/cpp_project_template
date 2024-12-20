@@ -7,15 +7,15 @@
 		"dockerfile": "../Dockerfile"
 	},
 	"runArgs": [
-		"--name", "cpp_project_container",
-		"--hostname", "cpp_project_container"
+		"--name", "cpp_project_template_container",
+		"--hostname", "cpp_project_template_container"
 	],
 	"userEnvProbe": "loginInteractiveShell",
 	"remoteUser": "michael",
 	"containerUser": "michael",
-	"mounts": [
-  		"source=/home/michael/conan_cache,target=/tmp/conan,type=bind,consistency=cached"
-	],
+	//"mounts": [
+  	//	"source=/home/michael/conan_cache,target=/workspaces/cpp_project_template/cache/conan2,type=bind,consistency=cached"
+	//],
 
 	// Uncomment the next line to run commands after the container is created.
 	// "postCreateCommand": "cat /etc/os-release",

@@ -12,7 +12,6 @@ class BasicConanfile(ConanFile):
 
     def requirements(self):
         self.requires("gtest/1.15.0")
-        self.requires("opencv/4.10.0")
         self.requires("boost/1.86.0")
 
     def build_requirements(self):
