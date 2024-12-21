@@ -33,3 +33,4 @@
 
 **/build/
 **/.venv/
+**/CMakeUserPresets.json
