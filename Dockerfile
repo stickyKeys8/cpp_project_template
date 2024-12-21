@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-FROM ubuntu:24.04 AS base
+FROM library/ubuntu:24.04@sha256:80dd3c3b9c6cecb9f1667e9290b3bc61b78c2678c02cbdae5f0fea92cc6734ab AS base
 
 # Shell
 ENV SHELL=/bin/bash
@@ -8,11 +8,14 @@ ENV TERM=xterm-256color
 SHELL ["/bin/bash", "-e", "-u", "-o", "pipefail", "-c"]
 
 # Create user
-ARG USERNAME=project_user
-ARG USER_UID=1001
+RUN userdel -r ubuntu
+
+ARG USERNAME=michael
+ARG USER_UID=1000
 ARG USER_GID=1000
 
-RUN useradd --uid ${USER_UID} --gid ${USER_GID} -m ${USERNAME} \
+RUN groupadd --gid ${USER_GID} ${USERNAME} \
+    && useradd --uid ${USER_UID} --gid ${USER_GID} -m ${USERNAME} \
     # Add sudo support
     && apt update \
     && apt install -y sudo locales \
@@ -179,9 +182,10 @@ RUN <<__RUN
 __RUN
 
 # Install project dependencies
-COPY --chown=${USER_UID}:{USER_GID} conanfile.py conanfile.py
+COPY --chown=${USER_UID}:${USER_GID} conanfile.py conanfile.py
 
 RUN --mount=type=cache,target=${CONAN_CACHE},sharing=locked,uid=${USER_UID},gid=${USER_GID} \
-        conan install . --build missing && \
-        rsync -rpg ${CONAN_CACHE} ${HOME}/.cache && \
-        ln -s ${HOME}/.cache/conan_cache ${CONAN_CACHE}
+        conan install . --build missing --profile=gcc && \
+        rsync -rgp ${CONAN_CACHE} ${HOME}
+
+RUN ln -s ${HOME}/conan_cache ${CONAN_CACHE}
