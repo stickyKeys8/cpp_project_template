@@ -5,7 +5,7 @@ if(CCACHE_FOUND)
     set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ccache)
 endif()
 
-project(OpenCVProject LANGUAGES CXX)
+project(HelloWorldProject LANGUAGES CXX)
 
 find_package(Boost REQUIRED)
 
