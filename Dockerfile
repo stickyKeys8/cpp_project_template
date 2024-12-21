@@ -129,12 +129,10 @@ __RUN
 RUN poetry config virtualenvs.in-project true
 RUN poetry config virtualenvs.prefer-active-python true
 
-# Conan
-ENV CONAN_HOME=/home/michael/.conan2
+RUN conan profile detect
+ARG CONAN_HOME=/home/michael/.conan2
 
-RUN mkdir -p ${HOME}/profiles
-
-ARG CLANG_PROFILE=${HOME}/profiles/clang
+ARG CLANG_PROFILE=${CONAN_HOME}/profiles/clang
 RUN <<__RUN
     touch ${CLANG_PROFILE}
     echo "[settings]" >> ${CLANG_PROFILE}
@@ -150,7 +148,7 @@ RUN <<__RUN
     echo "CXX=/usr/bin/clang++" >> ${CLANG_PROFILE}
 __RUN
 
-ARG GCC_PROFILE=${HOME}/profiles/gcc
+ARG GCC_PROFILE=${CONAN_HOME}/profiles/gcc
 RUN <<__RUN
     touch ${GCC_PROFILE}
     echo "[settings]" >> ${GCC_PROFILE}
@@ -167,17 +165,19 @@ RUN <<__RUN
 __RUN
 
 # Create a Conan global config
-ARG GLOBAL_CONF=${HOME}/global.conf
+ARG GLOBAL_CONF=${CONAN_HOME}/global.conf
 RUN <<__RUN
     touch ${GLOBAL_CONF}
     echo "tools.cmake.cmaketoolchain:generator=Ninja" >> ${GLOBAL_CONF}
     echo "core:default_profile=gcc" >> ${GLOBAL_CONF}
     echo "core:default_build_profile=gcc" >> ${GLOBAL_CONF}
+    echo "core.cache:storage_path=${CONAN_HOME}/conan_cache/conan_sotrage" >> ${GLOBAL_CONF}
+    echo "core.download:download_cache=${CONAN_HOME}/conan_cache/conan_downloads" >> ${GLOBAL_CONF}
+    echo "core.sources:download_cache=${CONAN_HOME}/conan_cache/conan_sources" >> ${GLOBAL_CONF}
 __RUN
 
 COPY --chown=michael:michael conanfile.py conanfile.py
 
-RUN --mount=type=cache,target=${CONAN_HOME},sharing=locked,uid=${USER_UID},gid=${USER_UID} \
-    conan config install ${HOME}/profiles -tf ${CONAN_HOME}/profiles && \
-    conan config install ${HOME}/global.conf -tf ${CONAN_HOME} && \
-    conan install . --build missing
+RUN conan install . --build missing
+
+VOLUME [ "${CONAN_HOME}/conan_cache" ]
