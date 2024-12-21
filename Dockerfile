@@ -185,7 +185,8 @@ __RUN
 COPY --chown=${USER_UID}:${USER_GID} conanfile.py conanfile.py
 
 RUN --mount=type=cache,target=${CONAN_CACHE},sharing=locked,uid=${USER_UID},gid=${USER_GID} \
-        conan install . --build missing --profile=gcc && \
-        rsync -rgp ${CONAN_CACHE} ${HOME}
+    conan install . --build missing --profile=gcc && \
+    conan install . --build missing --profile=clang && \
+    rsync -rgp ${CONAN_CACHE} ${HOME}
 
 RUN ln -s ${HOME}/conan_cache ${CONAN_CACHE}
