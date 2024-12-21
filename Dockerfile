@@ -190,3 +190,9 @@ RUN --mount=type=cache,target=${CONAN_CACHE},sharing=locked,uid=${USER_UID},gid=
     rsync -rgp ${CONAN_CACHE} ${HOME}
 
 RUN ln -s ${HOME}/conan_cache ${CONAN_CACHE}
+
+COPY --chown=${USER_UID}:${USER_GID} scripts scripts
+WORKDIR ${HOME}/scripts
+RUN poetry install
+
+ENV PATH=${PATH}:${HOME}/scripts/.venv/bin
