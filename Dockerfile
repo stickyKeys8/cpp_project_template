@@ -1,19 +1,18 @@
 # syntax=docker/dockerfile:1
 
 FROM ubuntu:24.04 AS base
-ENV bdsfkj=efdj
+
 # Shell
 ENV SHELL=/bin/bash
 ENV TERM=xterm-256color
 SHELL ["/bin/bash", "-e", "-u", "-o", "pipefail", "-c"]
 
 # Create user
-ARG USERNAME=michael
+ARG USERNAME=project_user
 ARG USER_UID=1001
-ARG USER_GID=${USER_UID}
+ARG USER_GID=1000
 
-RUN groupadd --gid ${USER_GID} ${USERNAME} \
-    && useradd --uid ${USER_UID} --gid ${USER_GID} -m ${USERNAME} \
+RUN useradd --uid ${USER_UID} --gid ${USER_GID} -m ${USERNAME} \
     # Add sudo support
     && apt update \
     && apt install -y sudo locales \
@@ -92,7 +91,7 @@ RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-${GCC_VERSION} 6
 RUN update-alternatives --install /usr/bin/clang clang /usr/bin/clang-${CLANG_VERSION} 60 --slave /usr/bin/clang++ clang++ /usr/bin/clang++-${CLANG_VERSION}
 
 RUN apt autoremove -y
-#RUN chown -R michael:michael .
+
 # User
 USER ${USER}
 WORKDIR ${HOME}
@@ -112,14 +111,14 @@ ENV PYENV_ROOT="${HOME}/.pyenv"
 ENV PATH="$PATH:${HOME}/.local/bin:${PYENV_ROOT}/bin:${PYENV_ROOT}/shims"
 
 ARG PYTHON_VERSION=3.13.0
-RUN --mount=type=cache,target=${HOME}/.pyenv/cache,sharing=locked,uid=${USER_UID},gid=${USER_UID} \
+RUN --mount=type=cache,target=${HOME}/.pyenv/cache,sharing=locked,uid=${USER_UID},gid=${USER_GID} \
     pyenv install ${PYTHON_VERSION} && pyenv global ${PYTHON_VERSION}
 
 # Pip
-RUN --mount=type=cache,target=${HOME}/.cache/pip,sharing=locked,uid=${USER_UID},gid=${USER_UID} \
+RUN --mount=type=cache,target=${HOME}/.cache/pip,sharing=locked,uid=${USER_UID},gid=${USER_GID} \
     pip install --upgrade pip && pip install wheel
 
-RUN --mount=type=cache,target=${HOME}/.cache/pip,sharing=locked,uid=${USER_UID},gid=${USER_UID} <<__RUN
+RUN --mount=type=cache,target=${HOME}/.cache/pip,sharing=locked,uid=${USER_UID},gid=${USER_GID} <<__RUN
     pip install cmake==3.31.2 --user
     pip install ninja==1.11.1 --user
     pip install conan==2.10.2 --user
@@ -131,7 +130,7 @@ RUN poetry config virtualenvs.in-project true
 RUN poetry config virtualenvs.prefer-active-python true
 
 RUN conan profile detect
-ARG CONAN_HOME=/home/michael/.conan2
+ARG CONAN_HOME=${HOME}/.conan2
 
 ARG CLANG_PROFILE=${CONAN_HOME}/profiles/clang
 RUN <<__RUN
@@ -167,19 +166,22 @@ __RUN
 
 # Create a Conan global config
 ARG GLOBAL_CONF=${CONAN_HOME}/global.conf
+ARG CONAN_CACHE=${CONAN_HOME}/conan_cache
+
 RUN <<__RUN
     touch ${GLOBAL_CONF}
     echo "tools.cmake.cmaketoolchain:generator=Ninja" >> ${GLOBAL_CONF}
     echo "core:default_profile=gcc" >> ${GLOBAL_CONF}
     echo "core:default_build_profile=gcc" >> ${GLOBAL_CONF}
-    echo "core.cache:storage_path=${CONAN_HOME}/conan_cache/conan_storage" >> ${GLOBAL_CONF}
-    echo "core.download:download_cache=${CONAN_HOME}/conan_cache/conan_downloads" >> ${GLOBAL_CONF}
-    echo "core.sources:download_cache=${CONAN_HOME}/conan_cache/conan_sources" >> ${GLOBAL_CONF}
+    echo "core.cache:storage_path=${CONAN_CACHE}/conan_storage" >> ${GLOBAL_CONF}
+    echo "core.download:download_cache=${CONAN_CACHE}/conan_downloads" >> ${GLOBAL_CONF}
+    echo "core.sources:download_cache=${CONAN_CACHE}/conan_sources" >> ${GLOBAL_CONF}
 __RUN
 
-COPY --chown=michael:michael conanfile.py conanfile.py
+# Install project dependencies
+COPY --chown=${USER_UID}:{USER_GID} conanfile.py conanfile.py
 
-RUN --mount=type=cache,target=${CONAN_HOME}/conan_cache,sharing=locked,uid=${USER_UID},gid=${USER_UID} \
+RUN --mount=type=cache,target=${CONAN_CACHE},sharing=locked,uid=${USER_UID},gid=${USER_GID} \
         conan install . --build missing && \
-        rsync -rpg ${CONAN_HOME}/conan_cache ${HOME} && \
-        ln -s ${HOME}/conan_cache ${CONAN_HOME}/conan_cache
+        rsync -rpg ${CONAN_CACHE} ${HOME}/.cache && \
+        ln -s ${HOME}/.cache/conan_cache ${CONAN_CACHE}
