@@ -141,7 +141,7 @@ RUN <<__RUN
     echo "[settings]" >> ${CLANG_PROFILE}
     echo "os=Linux" >> ${CLANG_PROFILE}
     echo "arch=x86_64" >> ${CLANG_PROFILE}
-    echo "build_type=Release" >> ${CLANG_PROFILE}
+    echo "build_type=Debug" >> ${CLANG_PROFILE}
     echo "compiler=clang" >> ${CLANG_PROFILE}
     echo "compiler.cppstd=gnu23" >> ${CLANG_PROFILE}
     echo "compiler.libcxx=libc++" >> ${CLANG_PROFILE}
@@ -157,7 +157,7 @@ RUN <<__RUN
     echo "[settings]" >> ${GCC_PROFILE}
     echo "os=Linux" >> ${GCC_PROFILE}
     echo "arch=x86_64" >> ${GCC_PROFILE}
-    echo "build_type=Release" >> ${GCC_PROFILE}
+    echo "build_type=Debug" >> ${GCC_PROFILE}
     echo "compiler=gcc" >> ${GCC_PROFILE}
     echo "compiler.cppstd=gnu23" >> ${GCC_PROFILE}
     echo "compiler.libcxx=libstdc++" >> ${GCC_PROFILE}
