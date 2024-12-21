@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 FROM ubuntu:24.04 AS base
-
+ENV bdsfkj=efdj
 # Shell
 ENV SHELL=/bin/bash
 ENV TERM=xterm-256color
@@ -44,6 +44,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
             make \
             git \
             7zip \
+            rsync \
             fzf
 
 # Install Python build dependencies
@@ -171,13 +172,15 @@ RUN <<__RUN
     echo "tools.cmake.cmaketoolchain:generator=Ninja" >> ${GLOBAL_CONF}
     echo "core:default_profile=gcc" >> ${GLOBAL_CONF}
     echo "core:default_build_profile=gcc" >> ${GLOBAL_CONF}
-    echo "core.cache:storage_path=${CONAN_HOME}/conan_cache/conan_sotrage" >> ${GLOBAL_CONF}
+    echo "core.cache:storage_path=${CONAN_HOME}/conan_cache/conan_storage" >> ${GLOBAL_CONF}
     echo "core.download:download_cache=${CONAN_HOME}/conan_cache/conan_downloads" >> ${GLOBAL_CONF}
     echo "core.sources:download_cache=${CONAN_HOME}/conan_cache/conan_sources" >> ${GLOBAL_CONF}
 __RUN
 
 COPY --chown=michael:michael conanfile.py conanfile.py
 
-RUN conan install . --build missing
+RUN --mount=type=cache,target=${CONAN_HOME}/conan_cache,sharing=locked,uid=${USER_UID},gid=${USER_UID} \
+        conan install . --build missing && \
+        rsync -rpg ${CONAN_HOME}/conan_cache ${HOME}
 
-VOLUME [ "${CONAN_HOME}/conan_cache" ]
+RUN ln -s ${HOME}/conan_cache ${CONAN_HOME}/conan_cache
