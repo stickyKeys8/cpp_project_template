@@ -181,6 +181,5 @@ COPY --chown=michael:michael conanfile.py conanfile.py
 
 RUN --mount=type=cache,target=${CONAN_HOME}/conan_cache,sharing=locked,uid=${USER_UID},gid=${USER_UID} \
         conan install . --build missing && \
-        rsync -rpg ${CONAN_HOME}/conan_cache ${HOME}
-
-RUN ln -s ${HOME}/conan_cache ${CONAN_HOME}/conan_cache
+        rsync -rpg ${CONAN_HOME}/conan_cache ${HOME} && \
+        ln -s ${HOME}/conan_cache ${CONAN_HOME}/conan_cache
