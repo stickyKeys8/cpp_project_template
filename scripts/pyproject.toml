@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "scripts"
+version = "0.1.0"
+description = ""
+authors = [""]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.13"
+
+[tool.poetry.scripts]
+hello-world = "scripts.hello_world:print_hello_world"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
