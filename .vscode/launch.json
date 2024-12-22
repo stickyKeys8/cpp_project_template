@@ -18,7 +18,7 @@
             "request": "launch",
             "program": "build/Debug/HelloWorld",
             "cwd": "${workspaceRoot}",
-            "initCommands":["settings set target.disable-aslr false"]
+            "initCommands":["settings set target.disable-aslr false"],
         },
         {
             "name": "(gdb) Launch",
@@ -26,7 +26,7 @@
             "request": "launch",
             "target": "build/Debug/HelloWorld",
             "cwd": "${workspaceRoot}",
-            "valuesFormatting": "parseText"
+            "valuesFormatting": "parseText",
         }
     ]
 }
