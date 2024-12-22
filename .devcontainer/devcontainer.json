@@ -49,7 +49,6 @@
 				"workbench.iconTheme": "material-icon-theme",
 			
 				"files.exclude": {
-					"**/compile_commands.json": true,
 					"**/.cache": true,
 					"**/.coverage": true,
 					"**/poetry.lock": true,

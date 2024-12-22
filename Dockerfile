@@ -180,8 +180,8 @@ ARG CONAN_CACHE=${CONAN_HOME}/conan_cache
 RUN <<__RUN
     touch ${GLOBAL_CONF}
     echo "tools.cmake.cmaketoolchain:generator=Ninja" >> ${GLOBAL_CONF}
-    echo "core:default_profile=gcc" >> ${GLOBAL_CONF}
-    echo "core:default_build_profile=gcc" >> ${GLOBAL_CONF}
+    echo "core:default_profile=clang" >> ${GLOBAL_CONF}
+    echo "core:default_build_profile=clang" >> ${GLOBAL_CONF}
     echo "core.cache:storage_path=${CONAN_CACHE}/conan_storage" >> ${GLOBAL_CONF}
     echo "core.download:download_cache=${CONAN_CACHE}/conan_downloads" >> ${GLOBAL_CONF}
     echo "core.sources:download_cache=${CONAN_CACHE}/conan_sources" >> ${GLOBAL_CONF}
@@ -191,8 +191,8 @@ __RUN
 COPY --chown=${USER_UID}:${USER_GID} conanfile.py conanfile.py
 
 RUN --mount=type=cache,target=${CONAN_CACHE},sharing=locked,uid=${USER_UID},gid=${USER_GID} \
-    conan install . --build missing --profile=gcc && \
-    conan install . --build missing --profile=clang && \
+    conan install . --build missing --profile:build=gcc --profile:host=gcc && \
+    conan install . --build missing --profile:build=clang --profile:host=clang && \
     rsync -rgp ${CONAN_CACHE} ${HOME}
 
 RUN ln -s ${HOME}/conan_cache ${CONAN_CACHE}

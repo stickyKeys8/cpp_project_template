@@ -29,5 +29,6 @@ target_link_libraries(HelloWorld
     ${Boost_LIBRARIES}
 )
 
+add_subdirectory(src/example_lib)
 enable_testing()
 add_subdirectory(tests)

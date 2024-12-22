@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
+#include <example_lib.hpp>
 
-TEST(FakeClassTest, AddNumbers)
+TEST(ExampleLibrary, AddNumbers)
 {
-    ASSERT_EQ(3, 3);
+    ASSERT_EQ(6, add(3, 3));
 }
