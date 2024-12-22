@@ -14,11 +14,10 @@
         },
         {
             "name": "(lldb) Launch",
-            "type": "lldb-mi",
+            "type": "lldb",
             "request": "launch",
-            "target": "build/Debug/HelloWorld",
+            "program": "build/Debug/HelloWorld",
             "cwd": "${workspaceRoot}",
-            "valuesFormatting": "parseText"
         },
         {
             "name": "(gdb) Launch",

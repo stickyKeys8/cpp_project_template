@@ -22,7 +22,8 @@
 				"zchrissirhcz.cmake-highlight",
 				"ms-python.python",
 				"pkief.material-icon-theme",
-				"webfreak.debug"
+				"webfreak.debug",
+				"vadimcn.vscode-lldb"
 			]
 		}
 	}
