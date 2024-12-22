@@ -34,3 +34,4 @@
 **/build/
 **/.venv/
 **/CMakeUserPresets.json
+**/.cache

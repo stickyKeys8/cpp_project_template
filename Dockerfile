@@ -79,6 +79,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
             clang-tools-${CLANG_VERSION} \
             clang-format-${CLANG_VERSION} \
             clang-tidy-${CLANG_VERSION} \
+            clangd-${CLANG_VERSION} \
             libc++-${CLANG_VERSION}-dev \
             lldb-${CLANG_VERSION}
 
@@ -94,6 +95,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-${GCC_VERSION} 60 --slave /usr/bin/g++ g++ /usr/bin/g++-${GCC_VERSION}
 RUN update-alternatives --install /usr/bin/clang clang /usr/bin/clang-${CLANG_VERSION} 60 --slave /usr/bin/clang++ clang++ /usr/bin/clang++-${CLANG_VERSION}
 RUN update-alternatives --install /usr/bin/lldb lldb /usr/bin/lldb-${CLANG_VERSION} 60
+RUN update-alternatives --install /usr/bin/clangd clangd /usr/bin/clangd-${CLANG_VERSION} 60
 
 RUN apt autoremove -y
 

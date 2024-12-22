@@ -5,6 +5,8 @@ if(CCACHE_FOUND)
     set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ccache)
 endif()
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 project(HelloWorldProject LANGUAGES CXX)
 
 find_package(Boost REQUIRED)
