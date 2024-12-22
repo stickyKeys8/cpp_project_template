@@ -79,7 +79,8 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
             clang-tools-${CLANG_VERSION} \
             clang-format-${CLANG_VERSION} \
             clang-tidy-${CLANG_VERSION} \
-            libc++-${CLANG_VERSION}-dev
+            libc++-${CLANG_VERSION}-dev \
+            lldb-${CLANG_VERSION}
 
 # Install gcc
 ARG GCC_VERSION=14
@@ -87,11 +88,12 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
         add-apt-repository ppa:ubuntu-toolchain-r/test && \
         apt update && \
-        apt install gcc-${GCC_VERSION} g++-${GCC_VERSION} -y
+        apt install gcc-${GCC_VERSION} g++-${GCC_VERSION} gdb -y
 
 # Cleanup
 RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-${GCC_VERSION} 60 --slave /usr/bin/g++ g++ /usr/bin/g++-${GCC_VERSION}
 RUN update-alternatives --install /usr/bin/clang clang /usr/bin/clang-${CLANG_VERSION} 60 --slave /usr/bin/clang++ clang++ /usr/bin/clang++-${CLANG_VERSION}
+RUN update-alternatives --install /usr/bin/lldb lldb /usr/bin/lldb-${CLANG_VERSION} 60
 
 RUN apt autoremove -y
 

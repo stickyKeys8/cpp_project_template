@@ -3,11 +3,7 @@
 
 auto main(int argc, char **argv) -> int
 {
-  if (argc != 2)
-  {
-    std::cout << "usage: HelloWorld <File_Path>\n";
-    return -1;
-  }
+  int blah = 123;
 
   boost::filesystem::path path(argv[1]);
 
