@@ -24,7 +24,9 @@
 				"pkief.material-icon-theme",
 				"webfreak.debug",
 				"vadimcn.vscode-lldb",
-				"llvm-vs-code-extensions.vscode-clangd"
+				"llvm-vs-code-extensions.vscode-clangd",
+				"xaver.clang-format",
+				"notskm.clang-tidy"
 			]
 		}
 	}
