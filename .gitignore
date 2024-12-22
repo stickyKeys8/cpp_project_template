@@ -35,3 +35,4 @@
 **/.venv/
 **/CMakeUserPresets.json
 **/.cache
+compile_commands.json
