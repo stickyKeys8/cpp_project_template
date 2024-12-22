@@ -17,8 +17,6 @@ target_link_libraries(ExampleLibrary
     gtest::gtest
 )
 
-include(CPack)
-
 # Packaging support
 set(CPACK_PACKAGE_VENDOR "Vendor name")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Some summary")
@@ -31,10 +29,10 @@ set(CPACK_RESOURCE_FILE_README "${CMAKE_CURRENT_SOURCE_DIR}/README.md")
 set(CPACK_SOURCE_GENERATOR "TGZ;ZIP")
 set(CPACK_SOURCE_IGNORE_FILES
     /.git
-    /dist
-    /.*build.*
-    /\\\\.DS_Store
+    /build
 )
 
 install(TARGETS ExampleLibrary RUNTIME DESTINATION lib)
 install (DIRECTORY ${CMAKE_SOURCE_DIR}/include/example_lib DESTINATION include) 
+
+include(CPack)
