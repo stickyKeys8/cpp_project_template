@@ -185,6 +185,7 @@ RUN <<__RUN
     echo "core.cache:storage_path=${CONAN_CACHE}/conan_storage" >> ${GLOBAL_CONF}
     echo "core.download:download_cache=${CONAN_CACHE}/conan_downloads" >> ${GLOBAL_CONF}
     echo "core.sources:download_cache=${CONAN_CACHE}/conan_sources" >> ${GLOBAL_CONF}
+    echo "tools.build:download_source=true" >> ${GLOBAL_CONF}
 __RUN
 
 # Install project dependencies
