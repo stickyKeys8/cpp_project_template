@@ -197,6 +197,12 @@ RUN <<__RUN
     echo "tools.build:download_source=true" >> ${GLOBAL_CONF}
 __RUN
 
+ARG GDB_INIT=${HOME}/.gdbinit
+RUN <<__RUN
+    touch ${GDB_INIT}
+    echo "set auto-load safe-path /" >> ${GDB_INIT}
+__RUN
+
 # Install project dependencies
 COPY --chown=${USER_UID}:${USER_GID} conanfile.py conanfile.py
 

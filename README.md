@@ -11,3 +11,5 @@ Override settings from profiles.
 conan install . --build missing -s build_type=Release
 
 Then use the cmake presets conan generated.
+
+set disassembly intel
