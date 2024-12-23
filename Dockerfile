@@ -138,15 +138,20 @@ __RUN
 RUN poetry config virtualenvs.in-project true
 RUN poetry config virtualenvs.prefer-active-python true
 
+# Conan
 RUN conan profile detect
 ARG CONAN_HOME=${HOME}/.conan2
 
 ARG CLANG_PROFILE=${CONAN_HOME}/profiles/clang
 RUN <<__RUN
+    arch=$(uname -m)
+    if [ "$arch" = "aarch64" ]; then
+        arch="armv8"
+    fi;
     touch ${CLANG_PROFILE}
     echo "[settings]" >> ${CLANG_PROFILE}
     echo "os=Linux" >> ${CLANG_PROFILE}
-    echo "arch=x86_64" >> ${CLANG_PROFILE}
+    echo "arch=${arch}" >> ${CLANG_PROFILE}
     echo "build_type=Debug" >> ${CLANG_PROFILE}
     echo "compiler=clang" >> ${CLANG_PROFILE}
     echo "compiler.cppstd=gnu23" >> ${CLANG_PROFILE}
@@ -159,10 +164,14 @@ __RUN
 
 ARG GCC_PROFILE=${CONAN_HOME}/profiles/gcc
 RUN <<__RUN
+    arch=$(uname -m)
+    if [ "$arch" = "aarch64" ]; then
+        arch="armv8"
+    fi;
     touch ${GCC_PROFILE}
     echo "[settings]" >> ${GCC_PROFILE}
     echo "os=Linux" >> ${GCC_PROFILE}
-    echo "arch=x86_64" >> ${GCC_PROFILE}
+    echo "arch=${arch}" >> ${GCC_PROFILE}
     echo "build_type=Debug" >> ${GCC_PROFILE}
     echo "compiler=gcc" >> ${GCC_PROFILE}
     echo "compiler.cppstd=gnu23" >> ${GCC_PROFILE}
