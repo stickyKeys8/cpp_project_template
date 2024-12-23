@@ -125,7 +125,7 @@ RUN --mount=type=cache,target=${HOME}/.pyenv/cache,sharing=locked,uid=${USER_UID
 
 # Pip
 RUN --mount=type=cache,target=${HOME}/.cache/pip,sharing=locked,uid=${USER_UID},gid=${USER_GID} \
-    pip install --upgrade pip && pip install wheel
+    pip install --upgrade pip && pip install wheel numpy
 
 RUN --mount=type=cache,target=${HOME}/.cache/pip,sharing=locked,uid=${USER_UID},gid=${USER_GID} <<__RUN
     pip install cmake==3.31.2 --user
